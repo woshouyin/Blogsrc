@@ -1,4 +1,4 @@
-package gas;
+package database.gas;
 
 import java.sql.Date;
 

@@ -17,7 +17,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import exception.IllegalPasswordException;
 import exception.ImportUserException;
 import exception.ImportUserException.Type;
-import gas.RegisterUserGas;
+import database.gas.RegisterUserGas;
 
 public class ExcelReader implements AutoCloseable{
 	Workbook workBook;

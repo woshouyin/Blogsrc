@@ -1,6 +1,10 @@
 package database.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import database.connectionPool.connections.PooledConnection;
 
@@ -24,6 +28,33 @@ public abstract class AbsDao implements AutoCloseable{
 	 */
 	public void close() throws SQLException{
 		connection.putBack();
+	}
+	
+	
+	/**
+	 * 从表中查询所有项
+	 * @param table
+	 * 表名
+	 * @param id
+	 * 表中的id(列名必须为"id")
+	 * 
+	 */
+	protected HashMap<String, Object> selectAllFromTableById(String table, long id) throws SQLException {
+		String sql = "SELECT * FROM `" + table + "` WHERE `id` = ?;";
+		PreparedStatement stat = connection.prepareStatement(sql);
+		stat.setLong(1, id);
+		ResultSet rs = stat.executeQuery();
+		if(rs.next()) {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			int col = rsmd.getColumnCount();
+			for(int i = 1; i <= col; i++) {
+				map.put(rsmd.getColumnName(i), rs.getObject(i));
+			}
+			return map;
+		}else {
+			return null;
+		}
 	}
 	
 }
