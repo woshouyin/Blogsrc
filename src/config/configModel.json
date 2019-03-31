@@ -1,7 +1,7 @@
 {
 	"amsHomePath": "",
 	"databaseHost": "",
-	"databasePort": 0,
+	"databasePort": 3306,
 	"databaseUser": "",
 	"databasePassword": "",
 	"databaseName": "",
