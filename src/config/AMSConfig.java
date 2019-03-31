@@ -9,11 +9,13 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.logging.Level;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import exception.AMSConfigException;
+import log.LogUtil;
 
 /**
  * 用来载入和保存配置的类。
@@ -46,7 +48,13 @@ public class AMSConfig {
 		File configModelFile = new File(AMSConfig.class.getResource("configModel.json").getFile());
 		Type type = new TypeToken<HashMap<String, Object>>(){}.getType();
 		String modelEncode = "utf-8";
-		
+		boolean a = true;
+	/*
+	 * TODO:自动创建目录
+		if(!configFile.getParentFile().exists()) {
+			LogUtil.getLogger().log(Level.INFO, Boolean.valueOf(configFile.getParentFile().mkdir()).toString());
+		}
+		*/
 		if(!configFile.exists()) {
 			try {
 				configFile.createNewFile();

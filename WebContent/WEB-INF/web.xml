@@ -3,7 +3,7 @@
   <display-name>Blog</display-name>
   <context-param>
     <param-name>AMSConfigPath</param-name>
-    <param-value>d:/tomcat/amscfg/blog/config.json</param-value>
+    <param-value>pro/ams/Blog/config/config.json</param-value>
   </context-param>
   <context-param>
     <param-name>AMSConfigEncode</param-name>
