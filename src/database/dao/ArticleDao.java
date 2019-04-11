@@ -1,10 +1,12 @@
 package database.dao;
 
+import java.sql.CallableStatement;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.SQLType;
+import java.sql.Types;
 import java.util.HashMap;
-
 import database.connectionPool.connections.PooledConnection;
 import database.gas.ArticleGas;
 
@@ -28,23 +30,20 @@ public class ArticleDao extends AbsDao{
 		return	ag;
 	}
 	
-	public void putArticle(ArticleGas ag) throws SQLException {
+	public long putArticle(ArticleGas ag) throws SQLException {
+		long id = -1;
 		connection.setAutoCommit(false);
-		String sql = "INSERT INTO `article`(`id`, `title`, `auther_id`, `crt_date`, `psg_path`) VALUES(?,?,?,?,?)";
-		PreparedStatement stat = connection.prepareStatement(sql);
-		stat.setLong(1, ag.getId());
-		stat.setString(2, ag.getTitle());
-		stat.setLong(3, ag.getAutherId());
-		stat.setDate(4, ag.getCrtDate());
-		stat.setString(5, ag.getPsgPath());
-		try {
-			stat.execute();
-			connection.commit();
-		} catch(SQLException e) {
-			connection.rollBack();
-			e.printStackTrace();
-		}
-		
+		String sql = "{call add_article(?,?,?,?,?,?)}";
+		CallableStatement cstat = connection.prepareCall(sql);
+		cstat.setLong(1, ag.getAutherId());
+		cstat.setString(2, ag.getTitle());
+		cstat.setDate(3, ag.getCrtDate());
+		cstat.setString(4, ag.getPsgPath());
+		cstat.setString(5, ArticleGas.PLACEHOLDER);
+		cstat.registerOutParameter(6, Types.BIGINT);
+		cstat.execute();
+		id = cstat.getLong(6);
+		return id;
 	}
 
 }

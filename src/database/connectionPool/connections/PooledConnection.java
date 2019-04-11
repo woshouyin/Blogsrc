@@ -1,15 +1,14 @@
 package database.connectionPool.connections;
 
-import java.sql.PreparedStatement;
+import java.sql.Connection;
 import java.sql.SQLException;
-
 import database.connectionPool.ConnectionPool;
 
 /**
  * 被放入连接池中的连接 
  */
-public interface PooledConnection {
-	
+public interface PooledConnection extends Connection{
+	/*
 	public PreparedStatement prepareStatement(String sql) throws SQLException;
 
 	void setAutoCommit(boolean arg0) throws SQLException;
@@ -19,7 +18,7 @@ public interface PooledConnection {
 	void rollBack() throws SQLException;
 
 	boolean getAutoCommit() throws SQLException;
-	
+	*/
 	/**
 	 * 放回到连接池中
 	 * @throws SQLException

@@ -93,6 +93,7 @@ public class TimeOutConnectionPool implements ConnectionPool{
 		while(true) {
 			try {
 				conn = DriverManager.getConnection(url, user, password);
+				conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				tconn= new TimeOutPooledConnection(conn, this);
 				waittingConns.add(tconn);
 				break;

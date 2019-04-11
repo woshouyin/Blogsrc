@@ -1,9 +1,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.logging.Level;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,11 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import config.AMSConfig;
 import database.DatabaseManager;
-import database.connectionPool.ConnectionPool;
 import database.connectionPool.params.TimeOutConnPoolParams;
 import log.LogUtil;
 import util.FileBuilder;
-import util.URLBuilder;
 
 /**
  * Servlet implementation class InitServlet
@@ -43,9 +38,11 @@ public class InitServlet extends HttpServlet {
     	FileBuilder fb = new FileBuilder();
     	fb.registerPath("/log");
     	fb.registerPath("/files");
+    	fb.registerPath("/files/images");
+    	fb.registerPath("/files/articles");
     	fb.build(config.getString("amsHomePath"));
 		//初始化日志
-    	LogUtil.init("AMSLogger", config.getString("amsHomePath") + "log\\");
+    	LogUtil.init("AMSLogger", config.getString("amsHomePath") + "log/");
     	//启动数据库连接池
 		config = (AMSConfig) this.getServletContext().getAttribute("AMSConfig");
 		TimeOutConnPoolParams tcpp = new TimeOutConnPoolParams();
@@ -53,6 +50,7 @@ public class InitServlet extends HttpServlet {
 		DatabaseManager dm = new DatabaseManager("TimeOutConnectionPool", tcpp);
     	context.setAttribute("DatabaseManager", dm);
     	super.init();
+    	
     }
     
     /**

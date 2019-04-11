@@ -11,10 +11,10 @@
 		<table align="center">
 			<tr>
 				<td>
-					ID:
+					NAME:
 				</td>
 				<td>
-					<input type = "number" name = "id">
+					<input type = "text" name = "name">
 				</td>
 			</tr>
 			<tr>
@@ -27,10 +27,12 @@
 			</tr>
 			<tr>
 				<td>
-					<input type = "submit" value = "提交">
+					<input type = "submit" value = "登录">
 				</td>
 			</tr>
 		</table>
 	</form>
+	<button onclick = "location.href='Register.jsp'">Register</button>
+	<button onclick="location.href = 'Article.jsp'">Article</button>
 </body>
 </html>

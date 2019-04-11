@@ -1,14 +1,14 @@
 package database.dao;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Savepoint;
+import java.sql.Statement;
 import java.util.HashMap;
-
-import org.apache.xmlbeans.impl.jam.mutable.MPackage;
-
 import database.connectionPool.connections.PooledConnection;
 import database.gas.RegisterUserGas;
 import database.gas.UserGas;
@@ -70,32 +70,32 @@ public class UserDao extends AbsDao{
 			user.setName((String) map.get("name"));
 			user.setRegDate((Date)map.get("reg_date"));
 			user.setPrivilege((int) map.get("privilege"));
-			user.setEmail((String)map.get("e-mail"));
+			user.setEmail((String)map.get("E-mail"));
 			return user;
 		}else {
 			return null;
 		}
 	}
 	
+	/**
+	 * 注册用户
+	 * @param rug
+	 * 用户信息
+	 */
 	public void registerUser(RegisterUserGas rug) throws SQLException{
-		connection.setAutoCommit(false);
+		Savepoint sp = connection.setSavepoint();
 		
+		//String sql = "INSERT INTO `users` (`name`, `reg_date`, `privilege`, `E-mail`) VALUES(?,?,?,?)";
+		//String sqlCk = "INSERT INTO `user_check` (`name`, `password`) VALUES (?, MD5(?))";
+		String sql = "call add_user(?,?,?,?,?)";
 		
-		String sql = "INSERT INTO `USERS` (`id`, `name`, `reg_date`, `privilege`, `password`, `E-mail`) VALUES(?,?,?,?,MD5(?),?)";
 		PreparedStatement ups = connection.prepareStatement(sql);
-		ups.setLong(1, rug.getId());
-		ups.setString(2, rug.getName());
-		ups.setDate(3, rug.getRegDate());
-		ups.setInt(4, rug.getPrivilege());
+		ups.setString(1, rug.getName());
+		ups.setDate(2, rug.getRegDate());
+		ups.setInt(3, rug.getPrivilege());
+		ups.setString(4, rug.getEmail());
 		ups.setString(5, rug.getPassword());
-		ups.setString(6, rug.getEmail());
-		try {
-			ups.execute();
-			connection.commit();
-		} catch (SQLException e) {
-			connection.rollBack();
-			throw e;
-		}
+		ups.execute();
 	
 	}
 }

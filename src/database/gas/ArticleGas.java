@@ -8,6 +8,16 @@ public class ArticleGas {
 	private String title;
 	private Date crtDate;
 	private String psgPath;
+	public static final String PLACEHOLDER = "{a{atid}d}";
+	
+	public static ArticleGas generatePuttingArticleGas(long autherId, String title, String rawPsgPath) {
+		ArticleGas at = new ArticleGas();
+		at.setAutherId(autherId);
+		at.setTitle(title);
+		at.setPsgPath(rawPsgPath);
+		at.setCrtDate(new java.sql.Date(new java.util.Date().getTime()));
+		return at;
+	}
 	
 	public long getId() {
 		return id;
@@ -40,9 +50,8 @@ public class ArticleGas {
 		this.psgPath = psgPath;
 	}
 	
-	public void writeArticle() {
-		
+	public void replaceAtid() {
+		psgPath = psgPath.replace(PLACEHOLDER, Long.toString(id));
 	}
-	
 
 }

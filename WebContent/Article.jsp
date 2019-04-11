@@ -9,9 +9,18 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form action='GetArticleServlet' method = "get">
-			<input type="number" name="aid">
-			<input type = "submit" value = "提交">
-		</form>
+	<script>
+		function show(){
+			frm = document.getElementById("frm");
+			aidinp = document.getElementById("aid");
+			aid = aidinp.value;
+			frm.src = "GetArticleServlet?aid=" + aid;
+		}
+	</script>
+	<input type="number" id="aid">
+	<button onclick="location.href = 'User.jsp'">用户</button>
+	<button onclick="show()">提交</button>
+	<br>
+	<iframe id="frm" src="" width=80% height=600></iframe>
 </body>
 </html>

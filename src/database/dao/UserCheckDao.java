@@ -45,6 +45,20 @@ public class UserCheckDao extends AbsDao{
 		return ret;
 	}
 	
+	public long check(String name, String password) throws SQLException {
+		long ret = -1;
+		String sql = "SELECT `id` FROM `user_check` WHERE `name` = ? AND `password` = MD5(?)";
+		PreparedStatement psta = connection.prepareStatement(sql);
+		psta.setString(1, name);
+		psta.setString(2, password);
+		ResultSet rs = psta.executeQuery();
+		if(rs.next()) {
+			ret = rs.getLong(1);
+		}
+		rs.close();
+		psta.close();
+		return ret;
+	}
 	
 	/**
 	 * 检查token值是否正确
@@ -105,7 +119,7 @@ public class UserCheckDao extends AbsDao{
 			ps.setLong(2, id);
 			ps.execute();
 		} catch (SQLException e) {
-			connection.rollBack();
+			connection.rollback();
 			throw e;
 		}
 		
