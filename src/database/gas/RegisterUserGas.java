@@ -11,8 +11,13 @@ public class RegisterUserGas extends UserGas{
 	private static Pattern pattern = Pattern.compile("[a-zA-Z0-9!@#\\$%\\^&\\*\\(\\)_\\+-=\\[\\];'\\,\\./\\{\\}:\\\"<>\\? \\|\\\\]*");
 	private static Pattern patternNumCheck = Pattern.compile("[0-9]*");
 	
-	public RegisterUserGas(long id, String password) throws IllegalPasswordException {
-		this.id = id;
+	public RegisterUserGas(String name, String password) throws IllegalPasswordException {
+		this(password);
+		this.name = name;
+		this.privilege = 0;
+	}
+	
+	public RegisterUserGas(String password) throws IllegalPasswordException {
 		if(!pattern.matcher(password).matches()) {
 			throw new IllegalPasswordException(Type.ILLEGAL_CHARACTER);
 		}else if(patternNumCheck.matcher(password).matches()) {

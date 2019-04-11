@@ -1,7 +1,6 @@
 package servlet;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -30,7 +29,6 @@ public class GetArticleServlet extends HttpServlet {
      */
     public GetArticleServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -50,6 +48,7 @@ public class GetArticleServlet extends HttpServlet {
 			while ((line = br.readLine()) != null) {
 				writer.write(line);
 			}
+			br.close();
 			ad.close();
 		} catch (SQLException e) {
 			e.printStackTrace();

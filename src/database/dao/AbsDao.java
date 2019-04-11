@@ -4,8 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
-
 import database.connectionPool.connections.PooledConnection;
 
 /**
@@ -13,6 +13,9 @@ import database.connectionPool.connections.PooledConnection;
  */
 public abstract class AbsDao implements AutoCloseable{
 	protected PooledConnection connection;
+	protected static final int ID_COUNT_USER = 0;
+	protected static final int ID_COUNT_ARTICLE = 1;
+	protected static final int ID_COUNT_CMT = 2;
 	
 	/**
 	 * @param conn
