@@ -25,6 +25,7 @@ public class ArticleDao extends AbsDao{
 		ag.setId((long) map.get("id"));
 		ag.setTitle((String) map.get("title"));
 		ag.setAutherId((long) map.get("auther_id"));
+		ag.setAutherName((String) map.get("auther_name"));
 		ag.setCrtDate((Date) map.get("crt_date"));
 		ag.setPsgPath((String) map.get("psg_path"));
 		return	ag;
@@ -33,16 +34,17 @@ public class ArticleDao extends AbsDao{
 	public long putArticle(ArticleGas ag) throws SQLException {
 		long id = -1;
 		connection.setAutoCommit(false);
-		String sql = "{call add_article(?,?,?,?,?,?)}";
+		String sql = "{call add_article(?,?,?,?,?,?,?)}";
 		CallableStatement cstat = connection.prepareCall(sql);
 		cstat.setLong(1, ag.getAutherId());
-		cstat.setString(2, ag.getTitle());
-		cstat.setDate(3, ag.getCrtDate());
-		cstat.setString(4, ag.getPsgPath());
-		cstat.setString(5, ArticleGas.PLACEHOLDER);
-		cstat.registerOutParameter(6, Types.BIGINT);
+		cstat.setString(2, ag.getAutherName());
+		cstat.setString(3, ag.getTitle());
+		cstat.setDate(4, ag.getCrtDate());
+		cstat.setString(5, ag.getPsgPath());
+		cstat.setString(6, ArticleGas.PLACEHOLDER);
+		cstat.registerOutParameter(7, Types.BIGINT);
 		cstat.execute();
-		id = cstat.getLong(6);
+		id = cstat.getLong(7);
 		return id;
 	}
 

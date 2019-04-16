@@ -43,6 +43,8 @@ public class ArticleWriterServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=UTF-8");
 		PrintWriter pw = response.getWriter();
 		String title = request.getParameter("title");
 		String atc = request.getParameter("article");
@@ -57,20 +59,14 @@ public class ArticleWriterServlet extends HttpServlet {
 		String base = config.getString("amsHomePath");
 		StringBuilder path = new StringBuilder("files/articles/");
 		path.append(ug.getName()).append("/ac").append(ArticleGas.PLACEHOLDER).append(".html");
-		ArticleGas ag = ArticleGas.generatePuttingArticleGas(ug.getId(), title, path.toString());
+		ArticleGas ag = ArticleGas.generatePuttingArticleGas(ug.getId(), ug.getName(), title, path.toString());
 		try(ArticleDao ad = dm.getDao(ArticleDao.class);) {
 			long id = ad.putArticle(ag);
 			ag.setId(id);
 			ag.replaceAtid();
-			File f = new File(base + ag.getPsgPath());
-			if(!f.getParentFile().exists()) {
-				FileBuilder.buildPathEx(f.getParentFile());
-			}
-			PrintWriter fpw = new PrintWriter(f);
-			fpw.print(atc);
-			fpw.close();
+			ag.writeContent(base, atc);
 		} catch (SQLException e) {
-			pw.append("fall");
+			pw.append("写入失败");
 			e.printStackTrace();
 			return;
 		}

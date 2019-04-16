@@ -5,14 +5,21 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Set;
+
+import javax.servlet.ServletException;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import exception.AMSConfigException;
+import log.LogUtil;
+import util.FileBuilder;
 
 /**
  * 用来载入和保存配置的类。
@@ -30,6 +37,7 @@ public class AMSConfig {
 	 * 配置文件路径
 	 * @param encode 
 	 * 配置文件编码
+	 * @throws ServletException 
 	 */
 	public AMSConfig(String configPath, String encode) {
 		this.configPath = configPath;
@@ -39,18 +47,17 @@ public class AMSConfig {
 	/**
 	 * 载入配置文件，若文件无法访问则复制模板文件内容并抛出错误，
 	 * 若缺失某些必须量，则报错。
+	 * @throws ServletException 
 	 */
 	private void load() {
 		File configFile = new File(configPath);
 		File configModelFile = new File(AMSConfig.class.getResource("configModel.json").getFile());
 		Type type = new TypeToken<HashMap<String, Object>>(){}.getType();
 		String modelEncode = "utf-8";
-	/*
-	 * TODO:自动创建目录
+
 		if(!configFile.getParentFile().exists()) {
-			LogUtil.getLogger().log(Level.INFO, Boolean.valueOf(configFile.getParentFile().mkdir()).toString());
+			FileBuilder.buildPathEx(configFile.getParentFile());
 		}
-		*/
 		if(!configFile.exists()) {
 			try {
 				configFile.createNewFile();

@@ -84,5 +84,6 @@
 	<br>
 	<button onclick="location.href = 'Write.jsp'">Write</button>
 	<button onclick="location.href = 'Article.jsp'">Article</button>
+	<button onclick="location.href = 'Login.jsp'">Login</button>
 </body>
 </html>

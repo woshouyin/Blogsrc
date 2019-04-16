@@ -105,15 +105,15 @@ public class LogUtil{
 	}
 	
 	public static void info(String str) {
-		getLogger().getParent().log(Level.INFO, str);
+		getLogger().log(Level.INFO, str);
 	}
 	
 	public static void warning(String str) {
-		getLogger().getParent().log(Level.WARNING, str);
+		getLogger().log(Level.WARNING, str);
 	}
 	
 	public static void severe(String str) {
-		getLogger().getParent().log(Level.SEVERE, str);
+		getLogger().log(Level.SEVERE, str);
 	}
 	
 	
@@ -134,7 +134,7 @@ public class LogUtil{
 	 */
 	public static String getLogFileName(Calendar cal) {
 		StringBuilder ret = new StringBuilder();
-		ret.append(cal.get(Calendar.YEAR)).append("-").append(cal.get(Calendar.MONTH))
+		ret.append(cal.get(Calendar.YEAR)).append("-").append(cal.get(Calendar.MONTH) + 1)
 					.append("-").append(cal.get(Calendar.DAY_OF_MONTH)).append(".log");
 		return ret.toString();
 	}

@@ -39,12 +39,12 @@ public class LoginServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
 		PrintWriter writer = response.getWriter();
 		DatabaseManager dm = AttributeGetter.getDatabaseManager(request);
 		String name = request.getParameter("name");
 		String password = request.getParameter("password");
-		
 		try(UserCheckDao ucd = dm.getDao(UserCheckDao.class)) {
 			long id = ucd.check(name, password);
 			if(id != -1) {
@@ -59,6 +59,7 @@ public class LoginServlet extends HttpServlet {
 				return;
 			}
 		} catch (SQLException e) {
+			writer.append("服务器繁忙");
 			e.printStackTrace();
 		}
 		writer.flush();

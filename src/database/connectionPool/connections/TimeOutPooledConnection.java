@@ -29,13 +29,12 @@ public class TimeOutPooledConnection extends AbsPooledConnection<TimeOutConnecti
 	 * 超时为true，否则为false
 	 */
 	public boolean isTimeOut() {
-		if(time - new Date().getTime() > connPool.getTimeOut() * 1000) {
+		if(new Date().getTime() - time  > connPool.getTimeOut() * 1000) {
 			return true;
 		}else {
 			return false;
 		}
 	}
-
 	
 	/**
 	 * 放回时记录一次时间

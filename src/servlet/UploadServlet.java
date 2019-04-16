@@ -49,7 +49,8 @@ public class UploadServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Boolean sucess = false;
-		
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
 		PrintWriter pw = response.getWriter();
 		AMSConfig config = AttributeGetter.getAMSConfig(request);
 		StringBuffer basePath = new StringBuffer((String) config.get("amsHomePath"));

@@ -36,7 +36,7 @@ public class FileBuilder {
 	 */
 	public static void buildPathEx(File f) {
 		Stack<File> fs = new Stack<File>();
-		while(!f.exists()) {
+		while(f != null && !f.exists()) {
 			fs.push(f);
 			f = f.getParentFile();
 		}

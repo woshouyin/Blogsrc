@@ -19,6 +19,7 @@ import database.gas.ArticleGas;
 
 /**
  * Servlet implementation class GetArticleServlet
+ * @deprecated
  */
 @WebServlet("/GetArticleServlet")
 public class GetArticleServlet extends HttpServlet {
@@ -35,6 +36,9 @@ public class GetArticleServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
 		PrintWriter writer = response.getWriter();
 		DatabaseManager dm = (DatabaseManager) this.getServletContext().getAttribute("DatabaseManager");
 		AMSConfig cfg = (AMSConfig) this.getServletContext().getAttribute("AMSConfig");
@@ -46,13 +50,14 @@ public class GetArticleServlet extends HttpServlet {
 			BufferedReader br = new BufferedReader(f);
 			String line;
 			while ((line = br.readLine()) != null) {
-				writer.write(line);
+				writer.append(line);
 			}
 			br.close();
 			ad.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		writer.append("<button onclick=\"location.href = 'Article.jsp'\">Article</button>");
 	}
 
 	/**

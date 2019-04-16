@@ -68,23 +68,27 @@ public class TimeOutConnectionPool implements ConnectionPool{
 	 * 检查等待池中的连接数量，关闭超时连接。
 	 */
 	private void check() throws SQLException {
+		//LogUtil.info("Check Start\n" + this);
+		while(!waittingConns.isEmpty() 
+				&& waittingConns.getFirst().isTimeOut()) {
+			LogUtil.info(Boolean.toString(waittingConns.getFirst().isTimeOut()));
+			waittingConns.removeFirst().close();
+		}
+		
 		if(waittingConns.size() > maxNum) {
 			for(int i = 0; i < waittingConns.size() - maxNum; i++) {
-				waittingConns.removeLast().close();
+				waittingConns.removeFirst().close();
 			}
 		}else if(waittingConns.size() < minNum) {
 			for(int i = 0; i < minNum - waittingConns.size(); i++) {
 				connect();
 			}
 		}
-		
-		while(waittingConns.getLast().isTimeOut() && waittingConns.size() > minNum) {
-			waittingConns.removeLast().close();
-		}
+		//LogUtil.info("Check End\n" + this);
 	}
 	
 	/**
-	 * 创建一个数据库连接并放入等待池，最多尝试tryTime次
+	 * 创建一个数据库连接并放入等待池末尾，最多尝试tryTime次
 	 */
 	private void connect() throws SQLException {
 		Connection conn;
@@ -160,14 +164,20 @@ public class TimeOutConnectionPool implements ConnectionPool{
 		return false;
 	}
 
+	/**
+	 * 获取一个链接,在获取前检查该池。
+	 */
 	@Override
 	public synchronized PooledConnection get() throws SQLException {
 		if(isWorking()) {
+			check();
+			/*
 			if(waittingConns.isEmpty()) {
 				for(int i = 0; i < minNum + 1; i++) {
 					connect();
 				}
 			}
+			*/
 			if(maxActiveNum == 0 || activeConns.size() < maxActiveNum) {
 				TimeOutPooledConnection tc = waittingConns.removeFirst();
 				if(tc == null || tc.isClosed()) {
@@ -184,6 +194,9 @@ public class TimeOutConnectionPool implements ConnectionPool{
 		}
 	}
 
+	/**
+	 * 将被取出一个连接插入队列末尾, 放回后检查连接池。
+	 */
 	@Override
 	public synchronized void put(PooledConnection connection) throws SQLException {
 		if(isWorking()) {
@@ -229,4 +242,38 @@ public class TimeOutConnectionPool implements ConnectionPool{
 				, params.getUser(), params.getPassword());
 		return dcp;
 	}
+	
+	/**
+	 * 返回连接池状态
+	 */
+	public synchronized String toString() {
+		StringBuilder ret = new StringBuilder("TimeOutConnetionPool:");
+		ret.append(this.hashCode()).append("\n");
+		ret.append("Active:").append(activeConns.toArray().length).append("{");
+		for(TimeOutPooledConnection tp : activeConns) {
+			try {
+				ret.append("(").append(Boolean.toString(tp.isClosed())).append(",")
+					.append(Boolean.toString(tp.isTimeOut())).append(")").append("\n");
+			} catch (SQLException e) {
+				ret.append("\n[").append(e.getMessage());
+			}
+		}
+		ret.append("}\n");
+		
+		ret.append("Waitting:").append(waittingConns.toArray().length).append("{");
+		for(TimeOutPooledConnection tp : waittingConns) {
+			try {
+				ret.append("(").append(Boolean.toString(tp.isClosed())).append(",")
+					.append(Boolean.toString(tp.isTimeOut())).append(")");
+			} catch (SQLException e) {
+				ret.append("[").append(e.getMessage()).append("]");
+			}
+		}
+		ret.append("}\n");
+		
+		return ret.toString();
+		
+	}
+	
+	
 }

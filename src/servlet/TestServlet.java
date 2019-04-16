@@ -24,9 +24,11 @@ public class TestServlet extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
 		PrintWriter writer = response.getWriter();
 		DatabaseManager dm = (DatabaseManager) this.getServletContext().getAttribute("DatabaseManager");
+		writer.append("中");
 		writer.append("<!DOCTYPE html>");
 		writer.append("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>");
 		writer.append("<form method = \"POST\"><input type = \"number\" name = \"userID\"><br><input type = \"password\" name = \"password\" ><br>"
