@@ -1,3 +1,4 @@
+<%@page import="java.util.UUID"%>
 <%@page import="jdk.internal.agent.resources.agent"%>
 <%@page import="config.AMSConfig"%>
 <%@page import="util.AttributeGetter"%>
@@ -40,7 +41,8 @@
 	<button onclick="location.href = 'Article.jsp?aid=' + document.getElementById('aid').value">提交</button>
 	<br>
 		<%=ag == null ? "无此文章" : ag.getTitle() %>
-		<%=ag == null ? "" : "    作者:" + ag.getAutherName()%>
+	<br>
+		<%=ag == null ? "" : "    作者:" + "<a href=\"User.jsp?id=" + ag.getAutherId() + "\">" + ag.getAutherName() + "</a>"%>
 	<HR>
 		<%=ag == null ? "" : ag.readContent(base) %>
 	<br>

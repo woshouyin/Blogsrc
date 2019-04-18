@@ -3,9 +3,11 @@ package database.dao;
 import java.sql.CallableStatement;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLType;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.HashMap;
 import database.connectionPool.connections.PooledConnection;
 import database.gas.ArticleGas;
@@ -16,6 +18,9 @@ public class ArticleDao extends AbsDao{
 		super(conn);
 	}
 	
+	/**
+	 * 通过文章id获取文章
+	 */
 	public ArticleGas getArticleGas(long id) throws SQLException {
 		HashMap<String, Object> map = selectAllFromTableById("article", id);
 		if(map == null) {
@@ -31,6 +36,13 @@ public class ArticleDao extends AbsDao{
 		return	ag;
 	}
 	
+	/**
+	 * 将文章存入数据库，存入后返回文章id
+	 * @param ag
+	 * 文章内容
+	 * @return
+	 * 文章id
+	 */
 	public long putArticle(ArticleGas ag) throws SQLException {
 		long id = -1;
 		connection.setAutoCommit(false);
@@ -46,6 +58,25 @@ public class ArticleDao extends AbsDao{
 		cstat.execute();
 		id = cstat.getLong(7);
 		return id;
+	}
+	
+	public ArrayList<ArticleGas> getArticlesByAutherId(long autherId) throws SQLException{
+		ArrayList<ArticleGas> ags = new ArrayList<ArticleGas>();
+		String sql = "select * from `article` where `auther_id`=? order by `id` asc";
+		PreparedStatement stat = connection.prepareStatement(sql);
+		stat.setLong(1, autherId);
+		ResultSet rs = stat.executeQuery();
+		while(rs.next()) {
+			ArticleGas ag = new ArticleGas();
+			ag.setAutherId(rs.getLong("auther_id"));
+			ag.setAutherName(rs.getString("auther_name"));
+			ag.setCrtDate(rs.getDate("crt_date"));
+			ag.setId(rs.getLong("id"));
+			ag.setPsgPath(rs.getString("psg_path"));
+			ag.setTitle(rs.getString("title"));
+			ags.add(ag);
+		}
+		return ags;
 	}
 
 }

@@ -9,6 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.mysql.cj.Session;
+
 import config.AMSConfig;
 import database.DatabaseManager;
 import database.dao.ArticleDao;
@@ -46,6 +50,14 @@ public class ArticleWriterServlet extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=UTF-8");
 		PrintWriter pw = response.getWriter();
+		HttpSession session = request.getSession();
+		String sToken = (String) session.getAttribute("token");
+		String cToken = request.getParameter("token");
+		if(sToken == null || !sToken.equals(cToken)) {
+			pw.write("请勿重复提交");
+			return;
+		}
+		session.removeAttribute("token");
 		String title = request.getParameter("title");
 		String atc = request.getParameter("article");
 		DatabaseManager dm = AttributeGetter.getDatabaseManager(request);
@@ -70,7 +82,7 @@ public class ArticleWriterServlet extends HttpServlet {
 			e.printStackTrace();
 			return;
 		}
-		response.sendRedirect("GetArticleServlet?aid=" + ag.getId());
+		response.sendRedirect("Article.jsp?aid=" + ag.getId());
 		
 	}
 

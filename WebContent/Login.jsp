@@ -1,3 +1,4 @@
+<%@page import="java.util.UUID"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -7,7 +8,19 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form action = "LoginServlet" method = "post">
+	<script>
+		var isCommited = false;
+		function onSubmit(){
+			if(isCommited){
+				return false;
+			}else{
+				isCommited = true;
+				return true;
+			}
+			
+		}
+	</script>
+	<form action = "LoginServlet" method = "post" onsubmit = "return onSubmit()">
 		<table align="center">
 			<tr>
 				<td>
@@ -27,7 +40,7 @@
 			</tr>
 			<tr>
 				<td>
-					<input type = "submit" value = "登录">
+					<input id="submit" type = "submit" value = "登录">
 				</td>
 			</tr>
 		</table>

@@ -90,14 +90,14 @@ public class UserCheckDao extends AbsDao{
 	
 	public String setNewToken(long id) throws SQLException {
 		//生成token String:id + 随机数 + 服务器时间秒数  MD5加密
-		StringBuffer str = new StringBuffer();
+		StringBuilder str = new StringBuilder();
 		str.append(id).append(new Random().nextInt(9999999)).append(new Date().getTime());
 		MessageDigest md;
-		StringBuffer token = null;
+		StringBuilder token = null;
 		try {
 			md = MessageDigest.getInstance("MD5");
 			byte[] bts = md.digest(str.toString().getBytes());
-			token = new StringBuffer();
+			token = new StringBuilder();
 			for(byte bt : bts) {
 				token.append(Integer.toHexString((0x000000FF & bt)| 0xFFFFFF00).substring(6));
 			}

@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form action = "RegisterServlet" method = "post">
+	<form action = "RegisterServlet" method = "post" onsubmit = "document.getElementById('submit').disabled = true">
 		<table align="center">
 			<tr>
 				<td>
@@ -36,7 +36,7 @@
 			</tr>
 			<tr>
 				<td>
-					<input type = "submit" value = "提交">
+					<input id = "submit" type = "submit" value = "提交">
 				</td>
 			</tr>
 		</table>

@@ -71,7 +71,6 @@ public class TimeOutConnectionPool implements ConnectionPool{
 		//LogUtil.info("Check Start\n" + this);
 		while(!waittingConns.isEmpty() 
 				&& waittingConns.getFirst().isTimeOut()) {
-			LogUtil.info(Boolean.toString(waittingConns.getFirst().isTimeOut()));
 			waittingConns.removeFirst().close();
 		}
 		

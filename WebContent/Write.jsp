@@ -1,3 +1,4 @@
+<%@page import="java.util.UUID"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -17,11 +18,14 @@
 	<body>
 		<button onclick="location.href = 'User.jsp'">User</button>
 		<br>
-		<form action="ArticleWriterServlet" method="post">
+		<form action="ArticleWriterServlet" method="post" 
+				onsubmit="document.getElementById('submit').disabled=true")>
+			<%request.getSession().setAttribute("token", UUID.randomUUID().toString());%>
+			<input name="token" type="hidden" value="${token}">
 			<textarea name="title" placeholder="Title"></textarea>
 			<textarea name="article" id="editor" placeholder="Balabala" autofocus></textarea>
 			<br>
-			<button type="submit">提交</button>
+			<button type="submit" id="submit">提交</button>
 		</form>
 		<script>
 			var editor = new Simditor({

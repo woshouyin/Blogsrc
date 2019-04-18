@@ -1,3 +1,6 @@
+<%@page import="database.dao.ArticleDao"%>
+<%@page import="database.gas.ArticleGas"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="util.CookieUtil"%>
 <%@page import="java.util.logging.Level"%>
 <%@page import="log.LogUtil"%>
@@ -16,74 +19,59 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <%
-
-	PrintWriter writer = response.getWriter();
 	String token = null;
+	boolean isMaster = false;
 	DatabaseManager dm = AttributeGetter.getDatabaseManager(request);
 	CookieUtil cu = new CookieUtil(request);
 	UserGas ug = cu.getUserByTokenCookie(dm);
-	if(ug == null){
-		request.getRequestDispatcher("/Login.jsp").forward(request, response);
-		return;
-	}
-	
-/*	//被移植到util.CookieUtil.getUserByTokenCookie(DatabaseManager dm)并在上方调用以替代该段
-	Cookie[] cookies = request.getCookies();
-	if(cookies == null){
-		request.getRequestDispatcher("/Login.jsp").forward(request, response);
-		return;
-	}
-	
-	for(Cookie cookie : cookies){
-		if(cookie.getName().equals("tk")){
-			token = cookie.getValue();
-		}
-	}
-	
-	if (token == null){
-		request.getRequestDispatcher("/Login.jsp").forward(request, response);
-		return;
-	}
-	long id = -1;
-	DatabaseManager dm = AttributeGetter.getDatabaseManager(request);
- 	try (UserCheckDao ucd = dm.getDao(UserCheckDao.class)){
-	 	id = ucd.checkByToken(token);
-		if (id == -1){
+
+	String ids = request.getParameter("id");
+	if(ids == null){
+		if(ug == null){
 			request.getRequestDispatcher("/Login.jsp").forward(request, response);
 			return;
+		}else{
+			isMaster = true;
 		}
- 	} catch(SQLException e){
- 		e.printStackTrace();
- 	}
-	
- 	UserGas ug = null;
- 	try(UserDao ud = dm.getDao(UserDao.class)){
- 		ug = ud.getUserGas(id);
- 		if(ug == null && id != -1){
- 			LogUtil.warning("users表与user_check表未同步");
- 		}
- 	} catch(SQLException e){
- 		e.printStackTrace();
- 	}
-*/
-
+	}else{
+		long id = Long.parseLong(ids);
+		if(ug == null || ug.getId() != id){
+			ug = dm.getDao(UserDao.class).getUserGas(id);
+		}else{
+			isMaster = true;
+		}
+	}
+	ArrayList<ArticleGas> ags = dm.getDao(ArticleDao.class).getArticlesByAutherId(ug.getId());
 
 %>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>Insert title here</title>
 </head>
 <body>
 	<%
-	writer.append(Long.valueOf(ug.getId()).toString()).append("<br>")
+	out.append(Long.valueOf(ug.getId()).toString()).append("<br>")
 			.append(ug.getRegDate().toString()).append("<br>")
 			.append(ug.getName()).append("<br>")
 			.append(Integer.valueOf(ug.getPrivilege()).toString()).append("<br>")
 			.append(ug.getEmail());
 	%>
 	<br>
-	<button onclick="location.href = 'Write.jsp'">Write</button>
+	<%
+		if (isMaster) {
+			out.append("<button onclick=\"location.href = 'Write.jsp'\">Write</button>");
+		}
+	%>
 	<button onclick="location.href = 'Article.jsp'">Article</button>
 	<button onclick="location.href = 'Login.jsp'">Login</button>
+	<HR>
+	<p>Articles:</p>
+	<%
+		for(ArticleGas ag : ags){
+			out.append("<br>").append("<a href=\"Article.jsp?aid=")
+				.append(Long.toString(ag.getId())).append("\">")
+				.append(ag.getTitle()).append("</a>");
+		}
+	%>
 </body>
 </html>
