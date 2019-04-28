@@ -40,6 +40,7 @@ public class InitServlet extends HttpServlet {
     	fb.registerPath("/files");
     	fb.registerPath("/files/images");
     	fb.registerPath("/files/articles");
+    	fb.registerPath("/files/download");
     	fb.build(config.getString("amsHomePath"));
 		//初始化日志
     	LogUtil.init("AMSLogger", config.getString("amsHomePath") + "log/");

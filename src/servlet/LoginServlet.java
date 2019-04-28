@@ -16,6 +16,7 @@ import com.mysql.cj.Session;
 import database.DatabaseManager;
 import database.dao.UserCheckDao;
 import util.AttributeGetter;
+import util.StrCheck;
 
 /**
  * Servlet implementation class LoginServlet
@@ -50,8 +51,9 @@ public class LoginServlet extends HttpServlet {
 		String name = request.getParameter("name");
 		String password = request.getParameter("password");
 		try(UserCheckDao ucd = dm.getDao(UserCheckDao.class)) {
-			long id = ucd.check(name, password);
-			if(id != -1) {
+			long id = -1;
+			if(StrCheck.check("PASSWORD", password)  
+					&& (id = ucd.check(name, password)) != -1) {
 				String token = ucd.setNewToken(id);
 				Cookie cookie = new Cookie("tk", token);
 				cookie.setMaxAge(60*60*24);
@@ -66,8 +68,6 @@ public class LoginServlet extends HttpServlet {
 			writer.append("服务器繁忙");
 			e.printStackTrace();
 		}
-		writer.flush();
-		
 		
 	}
 

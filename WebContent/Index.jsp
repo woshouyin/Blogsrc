@@ -11,5 +11,6 @@
 	<button onclick="location.href = 'Login.jsp'">Login</button>
 	<button onclick = "location.href='Register.jsp'">Register</button>
 	<button onclick="location.href = 'Article.jsp'">Article</button>
+	<button onclick="location.href = 'Download.jsp'">Download</button>
 </body>
 </html>

@@ -65,7 +65,8 @@
 	<button onclick="location.href = 'Article.jsp'">Article</button>
 	<button onclick="location.href = 'Login.jsp'">Login</button>
 	<HR>
-	<p>Articles:</p>
+	<b>Articles:</B>
+	<br>
 	<%
 		for(ArticleGas ag : ags){
 			out.append("<br>").append("<a href=\"Article.jsp?aid=")
