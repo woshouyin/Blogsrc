@@ -1,6 +1,8 @@
+<%@page import="util.UnitConUtil"%>
 <%@page import="util.AttributeGetter"%>
 <%@page import="config.AMSConfig"%>
 <%@page import="util.DownloadUtil"%>
+<%@page import="util.UnitConUtil"%>
 <%@page import="java.io.File"%>
 <%@page import="java.net.URL"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -26,7 +28,9 @@
 		File[] fs = file.listFiles();
 		for (File f : fs){
 			String name = f.getCanonicalFile().getName();
-			out.append("<br>").append("<a href=\"").append("files/download/").append(name).append("\">").append(name).append("</a>");
+			String len = UnitConUtil.longToString(f.length());
+			out.append("<br>").append("<a href=\"").append("files/download/").append(name).append("\">").append(name).append("</a>")
+				.append(len).append("B");
 		}
 	%>
 </body>

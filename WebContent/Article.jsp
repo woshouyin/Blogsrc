@@ -1,5 +1,7 @@
+<%@page import="database.gas.CmtGas"%>
+<%@page import="database.dao.CmtDao"%>
+<%@page import="database.gas.CmtTreeGas"%>
 <%@page import="java.util.UUID"%>
-<%@page import="jdk.internal.agent.resources.agent"%>
 <%@page import="config.AMSConfig"%>
 <%@page import="util.AttributeGetter"%>
 <%@page import="database.DatabaseManager"%>
@@ -10,13 +12,36 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<%@page errorPage="error404.jsp" %>
+<style>
+	.cmt_blk{border:1px solid #ccc;}
+</style>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <title>Insert title here</title>
 </head>
 <body>
+	<%!
+		public static String displayCmt(CmtTreeGas ct){
+			StringBuilder sb = new StringBuilder();
+			if(ct.isLeaf()){
+				CmtGas cmt = ct.getCmt();
+				sb.append("<div class=\"cmt_blk\">");
+				sb.append(cmt.getAutherName()).append(":")
+					.append(cmt.getContant()).append("<br>");
+				sb.append("<textarea></textarea><button>评论</button>");
+				sb.append("</div><br>");
+				return sb.toString();
+			}else{
+				while(!ct.isLeaf()){
+					CmtTreeGas next = ct.next();
+					sb.append(displayCmt(next));
+				}
+				return sb.toString();
+			}
+		}
+	
+	%>
 	<%
 		PrintWriter writer = response.getWriter();
 		DatabaseManager dm = AttributeGetter.getDatabaseManager(request);
@@ -45,6 +70,12 @@
 		<%=ag == null ? "" : "    作者:" + "<a href=\"User.jsp?id=" + ag.getAutherId() + "\">" + ag.getAutherName() + "</a>"%>
 	<HR>
 		<%=ag == null ? "" : ag.readContent(base) %>
-	<br>
+	<HR>
+		<%
+			if(ag != null){
+				CmtTreeGas ctg = dm.getDao(CmtDao.class).getCmtTreeGasByArticleId(ag.getId());
+				out.println(displayCmt(ctg));
+			}
+		%>
 </body>
 </html>

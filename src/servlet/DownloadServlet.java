@@ -11,7 +11,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import config.AMSConfig;
 import util.AttributeGetter;
 import util.DownloadUtil;
@@ -50,18 +49,34 @@ public class DownloadServlet extends HttpServlet {
 		PrintWriter writer = response.getWriter();
 		AMSConfig config = AttributeGetter.getAMSConfig(request);
 		String fileName = request.getParameter("fileName");
+		String urlStr = request.getParameter("urlStr");
+		if("".equals(fileName)) {
+			fileName = urlStr;
+		}
+		String[] strs = fileName.split("/");
+		fileName = strs[strs.length - 1];
 		if(!StrCheck.check("FILE_NAME", fileName)) {
 			writer.append("请输入正确的文件路径!!");
 			return;
 		}
-		String urlStr = request.getParameter("urlStr");
 		StringBuilder path = new StringBuilder(config.getString("amsHomePath"));
 		path.append("files/download/").append(fileName);
 		File file = new File(path.toString());
 		FileBuilder.buildPathEx(file.getParentFile());
 		try{
 			URL url = new URL(urlStr);
-			DownloadUtil.DownloadFromUrl(url, file, 3000);
+			Thread t = new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					try {
+						DownloadUtil.DownloadFromUrl(url, file, 3000);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			t.start();
 		}catch(MalformedURLException e) {
 			writer.append("请输入正确的URL！！").append("<br>").append(e.getMessage());
 			e.printStackTrace();
