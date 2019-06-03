@@ -33,6 +33,8 @@ public class CookieUtil {
 	 * 通过Cookies中的token获取用户数据
 	 * @param dm
 	 * 数据库管理者对象
+	 * @return
+	 * 存在返回用户信息， 否则返回null
 	 */
 	public UserGas getUserByTokenCookie(DatabaseManager dm) {
 		String token = null;

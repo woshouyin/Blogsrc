@@ -9,6 +9,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class DownloadUtil {
+	
+	/**
+	 * 从指定url下载文件
+	 */
 	public static void DownloadFromUrl(URL url, File file, int timeout) throws IOException {
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setConnectTimeout(timeout);

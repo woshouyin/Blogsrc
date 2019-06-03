@@ -13,7 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import config.AMSConfig;
+import database.DatabaseManager;
+import database.gas.UserGas;
 import util.AttributeGetter;
+import util.CookieUtil;
 import util.DownloadUtil;
 import util.FileBuilder;
 import util.StrCheck;
@@ -49,6 +52,15 @@ public class DownloadServlet extends HttpServlet {
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter writer = response.getWriter();
 		AMSConfig config = AttributeGetter.getAMSConfig(request);
+		DatabaseManager dm = AttributeGetter.getDatabaseManager(request);
+		
+		CookieUtil cu = new CookieUtil(request);
+		UserGas ug = cu.getUserByTokenCookie(dm);
+		if(ug == null) {
+			writer.append("用户不存在");
+			return;
+		}
+		
 		String fileName = request.getParameter("fileName");
 		if(!StrCheck.check("FILE_NAME", fileName)) {
 			writer.append("请输入正确的文件路径!!");
@@ -56,7 +68,7 @@ public class DownloadServlet extends HttpServlet {
 		}
 		String urlStr = request.getParameter("urlStr");
 		StringBuilder path = new StringBuilder(config.getString("amsHomePath"));
-		path.append("files/download/").append(fileName);
+		path.append("files/download/temp/").append(fileName);
 		File file = new File(path.toString());
 		FileBuilder.buildPathEx(file.getParentFile());
 		try{
